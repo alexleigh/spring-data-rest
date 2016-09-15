@@ -36,14 +36,7 @@ import org.springframework.data.projection.ProjectionFactory;
 import org.springframework.data.projection.SpelAwareProxyProjectionFactory;
 import org.springframework.data.repository.support.Repositories;
 import org.springframework.data.rest.webmvc.PersistentEntityResource;
-import org.springframework.data.rest.webmvc.jpa.JpaRepositoryConfig;
-import org.springframework.data.rest.webmvc.jpa.LineItem;
-import org.springframework.data.rest.webmvc.jpa.Order;
-import org.springframework.data.rest.webmvc.jpa.OrderRepository;
-import org.springframework.data.rest.webmvc.jpa.Person;
-import org.springframework.data.rest.webmvc.jpa.PersonRepository;
-import org.springframework.data.rest.webmvc.jpa.PersonSummary;
-import org.springframework.data.rest.webmvc.jpa.UserExcerpt;
+import org.springframework.data.rest.webmvc.jpa.*;
 import org.springframework.data.rest.webmvc.util.TestUtils;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.LinkDiscoverer;
@@ -288,5 +281,32 @@ public class PersistentEntitySerializationTests {
 		String result = mapper.writeValueAsString(new Resource<PersonSummary>(projection));
 
 		assertThat(JsonPath.read(result, "$._links.self"), is(notNullValue()));
+	}
+
+	/**
+	 * @see DATAREST-872
+	 */
+	@Test
+	public void serializesInheritance() throws Exception {
+
+		Suite suite = new Suite();
+		suite.setSuiteCode("Suite 42");
+
+		Dinner dinner = new Dinner();
+		dinner.setDinnerCode("STD_DINNER");
+
+		Guest guest = new Guest();
+		guest.setRoom(suite);
+		guest.addMeal(dinner);
+
+		PersistentEntityResource resource = PersistentEntityResource.
+				build(guest, repositories.getPersistentEntity(Guest.class)).
+				withLink(new Link("/guests/1")).
+				build();
+
+		String result = mapper.writeValueAsString(resource);
+
+		assertThat(JsonPath.read(result, "$.room.type"), equalTo("suite"));
+		assertThat(JsonPath.read(result, "$.meals[0].type"), equalTo("dinner"));
 	}
 }
