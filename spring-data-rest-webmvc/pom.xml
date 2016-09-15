@@ -5,6 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>spring-data-rest-webmvc</artifactId>
+	<version>2.5.2.FORK</version>
 
 	<name>Spring Data REST - WebMVC</name>
 	<description>Spring Data REST - WebMVC</description>
@@ -26,7 +27,7 @@
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>spring-data-rest-core</artifactId>
-			<version>${project.version}</version>
+			<version>2.5.2.RELEASE</version>
 		</dependency>
 
 		<dependency>

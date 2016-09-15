@@ -25,6 +25,12 @@
 			<type>test-jar</type>
 		</dependency>
 
+		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-rest-webmvc</artifactId>
+			<version>2.5.2.FORK</version>
+		</dependency>
+
 		<!-- JPA -->
 
 		<dependency>
