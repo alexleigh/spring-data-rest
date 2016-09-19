@@ -44,7 +44,27 @@ public class Guest {
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true) //
 	private List<Meal> meals = new ArrayList<Meal>();
 
+	@OneToOne(cascade = CascadeType.ALL) //
+	private RatePlan mainRatePlan;
+
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true) //
+	private List<RatePlan> additionalRatePlans = new ArrayList<RatePlan>();
+
+	@OneToOne(cascade = CascadeType.ALL) //
+	private Folio mainFolio;
+
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true) //
+	private List<Folio> additionalFolios = new ArrayList<Folio>();
+
 	public void addMeal(Meal meal) {
 		this.meals.add(meal);
+	}
+
+	public void addAdditionalRatePlan(RatePlan ratePlan) {
+		this.additionalRatePlans.add(ratePlan);
+	}
+
+	public void addAdditionalFolio(Folio folio) {
+		this.additionalFolios.add(folio);
 	}
 }
