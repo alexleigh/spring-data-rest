@@ -388,4 +388,43 @@ public class PersistentEntitySerializationTests {
 		assertThat(JsonPath.read(result, "$.mainFolio.payable.paymentInstruction"), equalTo("CC"));
 		assertThat(JsonPath.read(result, "$.additionalFolios[0].payable.paymentInstruction"), equalTo("DEPOSIT"));
 	}
+
+	/**
+	 * @see DATAREST-900
+	 */
+	@Test
+	public void serializesInheritanceAsPropertyForRoot() throws Exception {
+
+		DailyRatePlan dailyRatePlan = new DailyRatePlan();
+		dailyRatePlan.setDailyRate(BigDecimal.valueOf(199.50));
+
+		PersistentEntityResource resource = PersistentEntityResource//
+				.build(dailyRatePlan, context.getPersistentEntity(DailyRatePlan.class))//
+				.withLink(new Link("/dailyRatePlans/1")).build();
+
+		String result = mapper.writeValueAsString(resource);
+
+		assertThat(JsonPath.read(result, "$.type"), equalTo("daily"));
+	}
+
+	/**
+	 * @see DATAREST-900
+	 */
+	@Test
+	public void serializesInheritanceAsPropertyForEmbedded() throws Exception {
+
+		DailyRatePlan dailyRatePlan = new DailyRatePlan();
+		dailyRatePlan.setDailyRate(BigDecimal.valueOf(199.50));
+
+		PersistentEntityResource resource = PersistentEntityResource//
+				.build(dailyRatePlan, context.getPersistentEntity(DailyRatePlan.class))//
+				.withLink(new Link("/dailyRatePlans/1")).build();
+
+		PagedResources<PersistentEntityResource> pagedResources = new PagedResources<PersistentEntityResource>(
+				Collections.singletonList(resource), new PageMetadata(1, 0, 10));
+
+		String result = mapper.writeValueAsString(pagedResources);
+
+		assertThat(JsonPath.read(result, "$._embedded.dailyRatePlans[0].type"), equalTo("daily"));
+	}
 }
